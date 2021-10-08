@@ -4,10 +4,12 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
@@ -17,6 +19,9 @@ import org.xml.sax.SAXException;
 public class App {
     static File animales = new File("D:\\Users\\damA\\Desktop\\DAM-2\\AD\\Trimestre 1\\P_3_XML-DOM\\archivos\\animales.xml");
     private static final String INDENT_NIVEL = "  ";  // Para indentación
+    static Scanner sc = new Scanner(System.in);
+    // Creamos el documento recogiendo el xml y combirtiendolo en document
+    private static Document doc = null;
 
     public static void main(String[] args) throws Exception {
 
@@ -30,6 +35,7 @@ public class App {
             System.out.println("====================== VETERINARIA =====================");
             System.out.println("========================================================");
             System.out.println(" 1 - Mostrar datos del fichero 'Animales.xml'");
+            System.out.println(" 2 - Nombre'");
             System.out.println("========================================================");
             System.out.println("               0 - Para cerrar el programa");
 
@@ -43,8 +49,9 @@ public class App {
                         break;
 
                     case 2:
-
+                        pedirNombreAltura();
                         break;
+
 
                     case 3:
 
@@ -60,6 +67,45 @@ public class App {
         }
     }
 
+    private static void pedirNombreAltura() {
+
+        System.out.println("Dime el nombre del animal al cual quieres cambiar la altura");
+        String nombre = sc.nextLine();
+                   
+        try {
+            
+           
+            
+            NodeList nodes = doc.getElementsByTagName("animal");
+            for (int i = 0; i < nodes.getLength(); i++){
+                Element element = (Element) nodes.item(i);
+                NodeList name = element.getElementsByTagName("nombre");                
+                Element line = (Element) name.item(0);
+                System.out.println(": " + line.getFirstChild().getTextContent());
+                String nombreElement = line.getFirstChild().getTextContent();
+
+                if (nombre.equals(nombreElement)) {
+                    NodeList alt = element.getElementsByTagName("altura");
+                    //Element modificar = (Element) alt.item(1);
+                    //modificar.getFirstChild().setTextContent("20");
+                    
+                    Node item = alt.item(1);
+                    item.setTextContent("20");
+                    System.out.println(item.getFirstChild().getTextContent());
+                    
+                }
+            }
+
+
+        }catch (Exception e) {
+                e.getMessage();
+            }
+        
+        
+    
+        
+    }
+
     private static void mostrarAnimales() {
         // Creamos la instancia
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -72,7 +118,7 @@ public class App {
             // Creamos el builder
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             // Creamos el documento recogiendo el xml y combirtiendolo en document
-            Document doc = dBuilder.parse(animales);
+            doc = dBuilder.parse(animales);
             // Lista para guardar el documento y poder utilizar sus datos
 
             DocumentBuilder db = dbFactory.newDocumentBuilder();
