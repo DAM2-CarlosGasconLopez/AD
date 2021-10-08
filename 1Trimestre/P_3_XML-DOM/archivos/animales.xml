@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animales>
+    <animal id="1">
+        <nombre>Sultan</nombre>
+        <razas>Pastor Aleman</razas>
+        <altura>60cm</altura>
+        <peso>40kg</peso>
+        <fechaNacimiento>07/10/2018</fechaNacimiento>
+    </animal>
+    <animal id="2">
+        <nombre>Maika</nombre>
+        <razas>Pointer</razas>
+        <altura>49cm</altura>
+        <peso>29kg</peso>
+        <fechaNacimiento>28/03/2018</fechaNacimiento>
+    </animal>
+    <animal id="3">
+        <nombre>Rocky</nombre>
+        <razas>Braco</razas>
+        <altura>59cm</altura>
+        <peso>31kg</peso>
+        <fechaNacimiento>05/11/2019</fechaNacimiento>
+    </animal>
+    <animal id="4">
+        <nombre>Lista</nombre>
+        <razas>Border-Coli</razas>
+        <altura>47cm</altura>
+        <peso>28kg</peso>
+        <fechaNacimiento>17/01/2015</fechaNacimiento>
+    </animal>
+    <animal id="5">
+        <nombre>Duende</nombre>
+        <razas>Mastin Del Pirineo</razas>
+        <altura>65cm</altura>
+        <peso>43kg</peso>
+        <fechaNacimiento>23/08/2017</fechaNacimiento>
+    </animal>
+    <animal id="6">
+        <nombre>Canela</nombre>
+        <razas>Coli</razas>
+        <altura>45cm</altura>
+        <peso>26kg</peso>
+        <fechaNacimiento>31/10/2018</fechaNacimiento>
+    </animal>
+</animales>

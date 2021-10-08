@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -32,6 +33,8 @@ public class App {
             System.out.println(" 3 - Añadir carrera con sus puntos");
             System.out.println("========================================================");
             System.out.println("               0 - Para cerrar el programa");
+
+            try{
             menu = sc.nextInt();
             
             switch (menu) {
@@ -50,8 +53,14 @@ public class App {
                 default:
                 break;
             }
+            } catch(InputMismatchException ex){
+                System.out.println("Debes insertar un número");
+                sc.next();
+            }
+            
         }
 
+    
     }
     
     private static void añadirPuntuacion() {
