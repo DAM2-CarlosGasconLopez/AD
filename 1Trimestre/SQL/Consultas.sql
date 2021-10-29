@@ -47,7 +47,7 @@ BEGIN
     where referencia = CodigoReferencia and cod_prenda = Prenda;
     
     if stock - NumeroDeUnidades >= 0  then
-		update prenda 
+		update prenda  
 			set unidades= stock - NumeroDeUnidades
 			where referencia = CodigoReferencia and cod_prenda = Prenda;
 		insert into venta(referencia,cod_prenda,vendedor,fecha,unidades)
