@@ -13,3 +13,6 @@ drop column categoria;
 
 alter table empleados
 drop foreign key fk;
+
+select cod_categoria,descripcion
+from categoria;
