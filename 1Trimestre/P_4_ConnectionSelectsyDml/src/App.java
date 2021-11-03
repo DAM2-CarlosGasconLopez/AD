@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -24,6 +26,8 @@ public class App {
   public static Connection con = connection.getConnection();
 
   public static PreparedStatement ps = null;
+
+  public static List<Empleado> empleados = new ArrayList<>();
   
 
 
@@ -198,39 +202,127 @@ public class App {
 
   private static void Ejercicio4() {
     // Creamos las variables para hacer las consultas
-    String sqlAdd = "";
-    // Consulta para añadir categorias
-    sqlAdd = "select cod_categoria,descripcion from categoria;";
+    String sqlAll = "";
+    String sqlContCategorias = "";
+    String sqlAddCategoria = "";
+
+    // Selects para mostrar tipos de categorias
+    sqlAll = "select cod_categoria,descripcion from categoria;";
+
+    // Select para ver cuantas categorias hay
+    sqlContCategorias = "select min(cod_categoria),max(cod_categoria) from categoria;";
+
+    // Select para ver el nombre del empleado
+    sqlAddCategoria = "select cod_emple, nombre, categoria from empleados;";
     
 
     try {
-      // Preparamos y ejecutamos la inserccion de los datos a la tabla categorias
-      ps = con.prepareStatement(sqlAdd);
-    
-      // Recogemos los resultados del select
-      ResultSet rs = ps.executeQuery();
+      // Ejecutamos para ver las categorias
+      ps = con.prepareStatement(sqlAll);
+      // Recogemos los resultados de los selects
+      ResultSet rsAll = ps.executeQuery();
 
-      //Creamos un array para guardar los datos
+      // Rango categorias
+      ps = con.prepareStatement(sqlContCategorias); // Rango de categorias guardadas em sql     
+      ResultSet rsContCategoria = ps.executeQuery();
+
+      //Nombres de empleados
+      ps = con.prepareStatement(sqlAddCategoria); // Rango de categorias guardadas em sql     
+      ResultSet rsAddCategoria = ps.executeQuery();
+      
+
+      // Sacar cuantas categorias tenemos
+      int maxNum = 0;
+      int minNum = 0;
+
+      // Guardamos los resultados en una variable, para poder posteriormente mostrar los nombres los difirentes trabajos
+      // Lo metemos en un metodo en el cual me mostrara todas las categorias
+  
+      longitudCategorias(rsContCategoria, maxNum, minNum);
+
+      // Genero el scanner
+      Scanner sc = new Scanner(System.in);
+
+
+      // Genero una variable int
+      int tipo_de_categoria = 0;
+
+
+
+      while (rsAddCategoria.next()) {
+        Empleado emp = new Empleado();
+        emp.setCod_emple(rsAddCategoria.getInt(1));
+        emp.setNombre(rsAddCategoria.getString(2));
+        emp.setCategoria(rsAddCategoria.getInt(3));
+        
+        // Añadimos el empleado
+        empleados.add(emp);
+         
+      }
+
+      for (Empleado empleado : empleados) {
+        
+        //listamos las categorias
+        lstCategorias(rsAll);
+
+        System.out.println();
+                     
+        // Pedimos la categoria
+        System.out.println( empleado.getNombre() + " --> Elige el tipo de categoria (entero):");
+
+        //if( sc.nextInt() > minNum  &&  sc.nextInt() <= maxNum ){ 
+          tipo_de_categoria = sc.nextInt();
+        //}
+
+          String sqlUpdate = "update empleados set categoria = " + tipo_de_categoria + " where cod_emple = " + empleado.getCod_emple();
+          ps = con.prepareStatement(sqlUpdate);
+          ps.executeUpdate();
+      }
+       
+    } catch (Exception e) {   
+
+    }
+  }
+
+
+  private static void longitudCategorias(ResultSet rsContCategoria, int maxNum, int minNum) throws SQLException {
+    while (rsContCategoria.next()) {
+      // recogemos los numeros necesarios
+      minNum = rsContCategoria.getInt(1);
+      maxNum = rsContCategoria.getInt(2);
+
+    }
+
+    System.out.println(" " + minNum + "   " + maxNum);
+  }
+
+  private static void lstCategorias(ResultSet rsAll)
+      throws SQLException {
+         //Creamos un array para guardar los datos
       String categoria[] = new String[2];
 
       String visualizarCategorias = "";
-
-      while (rs.next()) {
-        categoria[0] = rs.getString(1);
-        categoria[1] = rs.getString(2);
-        
       
+      // creo un contador
+      int separar = 0;
+    while (rsAll.next()) {
+      // Recogemos el primer y segundo resultado
+      categoria[0] = rsAll.getString(1);
+      categoria[1] = rsAll.getString(2);
+
+      // Separa por bloques de tres categorias
+        if (separar==3) {
+          // le pongo un salto de linea
+          visualizarCategorias = visualizarCategorias+ "\n" + categoria[0] + " -- " + categoria[1] + "  |  ";
+          separar = 0;
+        }else{
           visualizarCategorias = visualizarCategorias + categoria[0] + " -- " + categoria[1] + "  |  ";
-        
         }
-        System.out.println(visualizarCategorias);
-
-      
-      
-
-      
-    } catch (Exception e) {     
-    }
+        // contador a 0
+      separar++;
+      }
+    // Visualizamos los empleos
+    System.out.println(visualizarCategorias);
   }
 
   private static void Ejercicio5() {
