@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+    <properties>
+        <comment>MiBaseDeDatos</comment>
+        <entry key="basedatos">proyecto_vacas</entry>
+        <entry key="urlConnectionCasa">jdbc:mysql://servidorifc.iesch.org:8882/proyecto_vacas?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</entry>
+        <entry key="urlConnectionClase">jdbc:mysql://servidorifc.iesch.org:3306/proyecto_vacas?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</entry>
+        <entry key="user">2_gascon_c</entry>
+        <entry key="pwd">gy7f8</entry>
+    </properties>
