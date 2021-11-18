@@ -27,6 +27,7 @@ import Objetos.Terneros;
 import Objetos.Toros;
 import Objetos.Vacas;
 import interfazGrafica.AddVaca;
+import interfazGrafica.ModifyVaca;
 import mySQL_XML.DbConnection;
 
 public class App extends JFrame implements ActionListener {
@@ -400,9 +401,36 @@ public class App extends JFrame implements ActionListener {
       Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
     }
     newvaca.setVisible(true);
+
+    try {
+      mostrarVacas(evt);
+    } catch (SQLException e) {
+      System.out.println("ERROR: mostrar vacas despues de insertar");
+    }
     
 
 
+  }
+
+
+  // Modificar vaca
+
+  private void modificarVacaActionListener(ActionEvent evt) {
+
+    ModifyVaca modificarVaca = null;
+    try {
+      modificarVaca = new ModifyVaca(null,true);
+    } catch (SQLException e) {
+      Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
+    }
+    modificarVaca.setVisible(true);
+
+    try {
+      mostrarVacas(evt);
+    } catch (SQLException e) {
+      System.out.println("ERROR: mostrar vacas despues de modificar");
+    }
+    
   }
 
   // ******************************************
@@ -470,11 +498,16 @@ public class App extends JFrame implements ActionListener {
           public void actionPerformed(java.awt.event.ActionEvent evt) {
               insertarVacaActionListener(evt);
           }
-      });
+        });
       
         vacas.add(insertarVacasMenu);
 
         modificarVacasMenu.setText("Modificar Vaca");
+        modificarVacasMenu.addActionListener(new java.awt.event.ActionListener() {
+          public void actionPerformed(java.awt.event.ActionEvent evt) {
+              modificarVacaActionListener(evt);
+          }
+        });
         vacas.add(modificarVacasMenu);
 
         borrarVacasMenu.setText("Borrar Vaca");
@@ -566,7 +599,8 @@ public class App extends JFrame implements ActionListener {
         pack();
       }
   
-     
+
+      
 
 
     @Override
@@ -597,7 +631,6 @@ public class App extends JFrame implements ActionListener {
         }
 
 
-    
-
+  
 }
 

@@ -1,23 +1,21 @@
 package interfazGrafica;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-
 import mySQL_XML.DbConnection;
 
 public class AddVaca extends javax.swing.JFrame{
@@ -25,6 +23,23 @@ public class AddVaca extends javax.swing.JFrame{
     // CONEXION
     public static DbConnection dbconnection = new DbConnection();
     public static Connection con = null;
+
+    // Declaracion de variables de la interfaz                   
+    private JComboBox<String> cbEstado;
+    private JComboBox<String> cbRaza;
+    private JLabel jLabel1;
+    private JSpinner spinnerCrotal;
+    private JSpinner spinnerEntrada;
+    private JSpinner spinnerNacimiento;
+    private JSpinner spinnerPartos;
+    private JTextField txtCrotal;
+    private JTextField txtEntrada;
+    private JTextField txtEstado;
+    private JTextField txtNacimiento;
+    private JTextField txtPartos;
+    private JTextField txtRaza;
+    private JButton btnAñadir;
+    // **************************************************   
     
     public AddVaca(java.awt.Frame parent, boolean modal) throws SQLException {
         
@@ -95,8 +110,8 @@ public class AddVaca extends javax.swing.JFrame{
         String raza = cbRaza.getSelectedItem().toString();
         String estado =  cbEstado.getSelectedItem().toString();
         int partos = (int) spinnerPartos.getValue();
-        Date entrada = (Date) spinnerEntrada.getValue();
-        Date nacimiento = (Date) spinnerNacimiento.getValue();
+        String entrada = simpleDateFormat.format(spinnerEntrada.getValue()).toString();
+        String nacimiento = simpleDateFormat.format(spinnerNacimiento.getValue()).toString();
 
         int newRaza = 0;
         String[] arraySeparar = raza.split(",");
@@ -110,13 +125,15 @@ public class AddVaca extends javax.swing.JFrame{
             ps.setInt(2, newRaza);
             ps.setString(3, estado);
             ps.setInt(4, partos);
-            ps.setDate(5, entrada);
-            ps.setDate(6, nacimiento);
-            ps.setInt(1, crotal);
+            ps.setString(5, entrada);
+            ps.setString(6, nacimiento);
+
 
             ps.executeUpdate();
         } catch (SQLException e) {
+            System.out.println("ERROR: crotal de vaca existente");
             Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
+
         }
 
             dispose();
@@ -145,7 +162,7 @@ public class AddVaca extends javax.swing.JFrame{
         jLabel1 = new JLabel();
         btnAñadir = new JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         txtCrotal.setText("Crotal");
 
@@ -182,7 +199,7 @@ public class AddVaca extends javax.swing.JFrame{
                 try {
                     btnAñadirMetodoInsert(evt);
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
+                    System.out.println("ERROR: boton insertar");
                     e.printStackTrace();
                 }
             }
@@ -257,20 +274,4 @@ public class AddVaca extends javax.swing.JFrame{
     }// </editor-fold>                        
 
 
-    // Declaracion de variables de la interfaz                   
-    private JComboBox<String> cbEstado;
-    private JComboBox<String> cbRaza;
-    private JLabel jLabel1;
-    private JSpinner spinnerCrotal;
-    private JSpinner spinnerEntrada;
-    private JSpinner spinnerNacimiento;
-    private JSpinner spinnerPartos;
-    private JTextField txtCrotal;
-    private JTextField txtEntrada;
-    private JTextField txtEstado;
-    private JTextField txtNacimiento;
-    private JTextField txtPartos;
-    private JTextField txtRaza;
-    private JButton btnAñadir;
-    // **************************************************                 
 }
