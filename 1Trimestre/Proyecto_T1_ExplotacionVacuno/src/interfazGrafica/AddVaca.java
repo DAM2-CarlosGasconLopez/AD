@@ -1,9 +1,13 @@
 package interfazGrafica;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,30 +38,89 @@ public class AddVaca extends javax.swing.JFrame{
         con = dbconnection.dataSource.getConnection();
 
         // Creo la consulta
-        String sql = "SELECT estadoParto " + 
+        String sqlEstado = "SELECT estadoParto " + 
                      "from proyecto_vacas.madre  " +                    
                      "group by estadoParto;";
 
+        String sqlRaza = "SELECT id_Raza,tipoRaza " + 
+                     "from proyecto_vacas.raza  " +                    
+                     "group by tipoRaza;";
+
         if (con != null) {
+            // Estado
             PreparedStatement ps = null;
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sqlEstado);
+
             ResultSet rs = ps.executeQuery();
 
-            String te[] = new String[2];
+            String te[] = new String[1];
 
             while (rs.next()) {
 
                te[0] = rs.getString(1);
-               te[1] = rs.getString(2);
 
-                cbRaza.addItem(te[0]);
-                cbEstado.addItem(te[1]);
+                cbEstado.addItem(te[0]);
 
+            }
+        
+            // Raza
+            ps = null;
+            ps = con.prepareStatement(sqlRaza);
+
+            rs = ps.executeQuery();  
+            String raza[] = new String[2];          
+
+            while (rs.next()) {
+
+               raza[0] = rs.getString(1);
+               raza[1] = rs.getString(2);
+
+                cbRaza.addItem(raza[0] + ", " + raza[1]);
             }
 
         } else {
             JOptionPane.showMessageDialog(this, "conexion fallida");
+
         }
+            
+    }
+
+    private void btnAñadirMetodoInsert(java.awt.event.ActionEvent evt) throws SQLException {                                          
+        // Genero la conexión
+        con = dbconnection.dataSource.getConnection();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        int crotal = (int) spinnerCrotal.getValue();
+        String raza = cbRaza.getSelectedItem().toString();
+        String estado =  cbEstado.getSelectedItem().toString();
+        int partos = (int) spinnerPartos.getValue();
+        Date entrada = (Date) spinnerEntrada.getValue();
+        Date nacimiento = (Date) spinnerNacimiento.getValue();
+
+        int newRaza = 0;
+        String[] arraySeparar = raza.split(",");
+        newRaza = Integer.parseInt(arraySeparar[0]);
+
+        try {
+            String sql = "insert into madre values(?,?,?,?,?,?);";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, crotal);
+            ps.setInt(2, newRaza);
+            ps.setString(3, estado);
+            ps.setInt(4, partos);
+            ps.setDate(5, entrada);
+            ps.setDate(6, nacimiento);
+            ps.setInt(1, crotal);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+            dispose();
+
     }
 
     public AddVaca(Object object, boolean b) {
@@ -67,19 +130,20 @@ public class AddVaca extends javax.swing.JFrame{
     
     private void initComponents() {
 
-        txtCrotal = new javax.swing.JTextField();
-        txtRaza = new javax.swing.JTextField();
-        txtEstado = new javax.swing.JTextField();
-        txtPartos = new javax.swing.JTextField();
-        txtNacimiento = new javax.swing.JTextField();
-        txtEntrada = new javax.swing.JTextField();
-        spinnerCrotal = new javax.swing.JSpinner();
-        cbRaza = new javax.swing.JComboBox<>();
-        cbEstado = new javax.swing.JComboBox<>();
-        spinnerPartos = new javax.swing.JSpinner();
-        spinnerEntrada = new javax.swing.JSpinner();
-        spinnerNacimiento = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
+        txtCrotal = new JTextField();
+        txtRaza = new JTextField();
+        txtEstado = new JTextField();
+        txtPartos = new JTextField();
+        txtNacimiento = new JTextField();
+        txtEntrada = new JTextField();
+        spinnerCrotal = new JSpinner();
+        cbRaza = new JComboBox<>();
+        cbEstado = new JComboBox<>();
+        spinnerPartos = new JSpinner();
+        spinnerEntrada = new JSpinner();
+        spinnerNacimiento = new JSpinner();
+        jLabel1 = new JLabel();
+        btnAñadir = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,7 +159,7 @@ public class AddVaca extends javax.swing.JFrame{
 
         txtEntrada.setText("Entrada Explotación");
 
-        spinnerCrotal.setModel(new javax.swing.SpinnerNumberModel(7000, 7000, 9000, 1199));
+        spinnerCrotal.setModel(new javax.swing.SpinnerNumberModel(7000, 7000, 9000, 1));
 
         cbRaza.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
@@ -110,6 +174,19 @@ public class AddVaca extends javax.swing.JFrame{
         spinnerNacimiento.setEditor(new javax.swing.JSpinner.DateEditor(spinnerNacimiento, "yyyy-MM-dd"));
 
         jLabel1.setText("Añadir Vaca");
+
+        btnAñadir.setText("Añadir");
+
+        btnAñadir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btnAñadirMetodoInsert(evt);
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,23 +205,26 @@ public class AddVaca extends javax.swing.JFrame{
                             .addComponent(txtNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbRaza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(spinnerCrotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(spinnerPartos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(spinnerEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(spinnerNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(spinnerNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbRaza, 0, 154, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(104, 104, 104)
-                        .addComponent(jLabel1)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(btnAñadir, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCrotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spinnerCrotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -168,7 +248,9 @@ public class AddVaca extends javax.swing.JFrame{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spinnerNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                .addGap(18, 18, 18)
+                .addComponent(btnAñadir)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -176,18 +258,19 @@ public class AddVaca extends javax.swing.JFrame{
 
 
     // Declaracion de variables de la interfaz                   
-    private javax.swing.JComboBox<String> cbEstado;
-    private javax.swing.JComboBox<String> cbRaza;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JSpinner spinnerCrotal;
-    private javax.swing.JSpinner spinnerEntrada;
-    private javax.swing.JSpinner spinnerNacimiento;
-    private javax.swing.JSpinner spinnerPartos;
-    private javax.swing.JTextField txtCrotal;
-    private javax.swing.JTextField txtEntrada;
-    private javax.swing.JTextField txtEstado;
-    private javax.swing.JTextField txtNacimiento;
-    private javax.swing.JTextField txtPartos;
-    private javax.swing.JTextField txtRaza;
+    private JComboBox<String> cbEstado;
+    private JComboBox<String> cbRaza;
+    private JLabel jLabel1;
+    private JSpinner spinnerCrotal;
+    private JSpinner spinnerEntrada;
+    private JSpinner spinnerNacimiento;
+    private JSpinner spinnerPartos;
+    private JTextField txtCrotal;
+    private JTextField txtEntrada;
+    private JTextField txtEstado;
+    private JTextField txtNacimiento;
+    private JTextField txtPartos;
+    private JTextField txtRaza;
+    private JButton btnAñadir;
     // **************************************************                 
 }

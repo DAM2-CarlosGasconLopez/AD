@@ -29,12 +29,29 @@ import Objetos.Vacas;
 import interfazGrafica.AddVaca;
 import mySQL_XML.DbConnection;
 
-// extends JFrame implements ActionListener
 public class App extends JFrame implements ActionListener {
 
   // CONEXION
   public static DbConnection dbconnection = new DbConnection();
   public static Connection con = null;
+  //******************************************************************* 
+
+  // Declaracion Variables del MENU INTERFAZ
+  private JMenu vacas;
+  private JMenu toros;
+  private JMenu terneros;
+  private JMenu razas;
+  private JMenuBar menuPrincipal;
+  private JMenuItem mostrarVacasMenu;
+  private JMenuItem mostrarTorosMenu;
+  private JMenuItem mostrarTernerosMenu;
+  private JMenuItem mostrarRazasMenu;
+  private JMenuItem insertarVacasMenu;
+  private JMenuItem modificarVacasMenu;
+  private JMenuItem borrarVacasMenu;
+  private JScrollPane jScrollPane1;
+  private JTable tablaDatos;
+  //****************************************************************** 
 
   // LISTAS ANIMNALES
   static List<Vacas> arrayVacas = new ArrayList<Vacas>();
@@ -42,9 +59,10 @@ public class App extends JFrame implements ActionListener {
   static List<Terneros> arrayTerneros = new ArrayList<Terneros>();
   static List<Razas> arrayRazas = new ArrayList<Razas>();
 
-  // contraseña admin
+  // CONTRASEÑA admin usada en el metodo 'comprobarContraseñaAdministrador()'
   static final String passwd = "Admin1234";
-  
+  //************************************************************************ 
+
   // Inicializamos los componentes de la interfaz
   public App()  throws SQLException{    
 
@@ -52,8 +70,10 @@ public class App extends JFrame implements ActionListener {
     actualizarMadres();
 
   }
-
+  //************************************************************************ 
   
+
+  // INICIACION DE LA APP EN EL MAIN
   public static void main(String[] args) throws IOException {
     
     // Aqui comprobamos la conexíon 
@@ -116,7 +136,10 @@ public class App extends JFrame implements ActionListener {
     
       
   }
+  //************************************************************************ 
 
+
+  // Metodos llamados en el switch MENU
 
   private static void inicializarInterfaz() {
 
@@ -150,17 +173,10 @@ public class App extends JFrame implements ActionListener {
 
     }
   }
-   
+  
+  //*********************************************** */
+
       
-
-  
- 
-  
-
-  
-
-
-
 
   
 
@@ -189,6 +205,9 @@ public class App extends JFrame implements ActionListener {
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
     actualizarRazas(); 
   }
+
+  // ****************************************************************
+
 
 
   // Metodos de actualizar tablas y objetos
@@ -368,8 +387,9 @@ public class App extends JFrame implements ActionListener {
       }
   }
 
+ //***************************************************** */
 
-// Añadir vaca
+  // Añadir vaca
 
   private void insertarVacaActionListener(ActionEvent evt) {
 
@@ -385,7 +405,7 @@ public class App extends JFrame implements ActionListener {
 
   }
 
-
+  // ******************************************
 
 
   private void intiComponents() {
@@ -546,21 +566,7 @@ public class App extends JFrame implements ActionListener {
         pack();
       }
   
-      
-    private JMenu vacas;
-    private JMenu toros;
-    private JMenu terneros;
-    private JMenu razas;
-    private JMenuBar menuPrincipal;
-    private JMenuItem mostrarVacasMenu;
-    private JMenuItem mostrarTorosMenu;
-    private JMenuItem mostrarTernerosMenu;
-    private JMenuItem mostrarRazasMenu;
-    private JMenuItem insertarVacasMenu;
-    private JMenuItem modificarVacasMenu;
-    private JMenuItem borrarVacasMenu;
-    private JScrollPane jScrollPane1;
-    private JTable tablaDatos;
+     
 
 
     @Override

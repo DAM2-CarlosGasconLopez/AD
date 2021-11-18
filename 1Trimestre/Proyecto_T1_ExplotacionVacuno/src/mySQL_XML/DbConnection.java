@@ -34,8 +34,8 @@ public class DbConnection{
             fileInputS.close();
             
             database = properties.getProperty("basedatos");
-            //urlConnection=properties.getProperty("urlConnectionCasa");
-            urlConnection=properties.getProperty("urlConnectionClase");
+            urlConnection=properties.getProperty("urlConnectionCasa");
+            //urlConnection=properties.getProperty("urlConnectionClase");
             user = properties.getProperty("user");
             pwd = properties.getProperty("pwd"); 
 
