@@ -1,6 +1,5 @@
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,11 +8,12 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.GroupLayout;
+import javax.sound.sampled.Line;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -22,10 +22,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-
-
+import Objetos.Razas;
+import Objetos.Terneros;
+import Objetos.Toros;
 import Objetos.Vacas;
+import interfazGrafica.AddVaca;
 import mySQL_XML.DbConnection;
 
 // extends JFrame implements ActionListener
@@ -37,163 +38,172 @@ public class App extends JFrame implements ActionListener {
 
   // LISTAS ANIMNALES
   static List<Vacas> arrayVacas = new ArrayList<Vacas>();
+  static List<Toros> arrayToros = new ArrayList<Toros>();
+  static List<Terneros> arrayTerneros = new ArrayList<Terneros>();
+  static List<Razas> arrayRazas = new ArrayList<Razas>();
+
+  // contraseña admin
+  static final String passwd = "Admin1234";
   
+  // Inicializamos los componentes de la interfaz
+  public App()  throws SQLException{    
+
+    intiComponents();
+    actualizarMadres();
+
+  }
+
   
   public static void main(String[] args) throws IOException {
     
+    // Aqui comprobamos la conexíon 
+
     comprobarConexion();
-    
-    java.awt.EventQueue.invokeLater(new Runnable() {
-    
-        public void run() {
-              new App().setVisible(true);
-          }
-      }); 
-
-
-    {// Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
         
-    // int menu = 10;
+    int menu = 10;
 
-    // while (menu != 0) {
-    //     System.out.println();
-    //     System.out.println("====================== MENU XML : DOM =====================");
-    //     System.out.println("======================== VETERINARIA ======================");
-    //     System.out.println("===========================================================");
-    //     System.out.println("= 1 - Mostrar todos los animales de nuestra base de datos'=");
-    //     System.out.println("= 2 - Cambair altura a uno de nuestros animales           =");
-    //     System.out.println("= 3 - Añadir nuevo animal                                 =");
-    //     System.out.println("= 4 - Borrar animal seleccionado                          =");
-    //     System.out.println("===========================================================");
-    //     System.out.println("==              0 - Para cerrar el programa              ==");
-    //     System.out.println("===========================================================");
+    while (menu != 0) {
+        System.out.println();
+        System.out.println("===============================================================");
+        System.out.println("=========== GESTION GANADERA por Carlos Gascón López ==========");
+        System.out.println("======================= VENTANA USUARIOS ======================");
+        System.out.println("===============================================================");
+        System.out.println("=== 1 - Usuario Ganadero                                    ===");
+        System.out.println("=== 2 - Usuario Administrador                               ===");
+        System.out.println("===============================================================");
+        System.out.println("===             0 - Para cerrar el programa                 ===");
+        System.out.println("===============================================================");
 
-    //     try{
-    //         menu = sc.nextInt();
+        try{
+            menu = sc.nextInt();
 
-    //         switch (menu) {
-    //             case 1:
-    //             comprobarConexion();
-    //               mostrarVacas();
-    //                 break;
+            switch (menu) {
+                case 1:
 
-    //             case 2:
-                   
-    //                 break;
+                  //Comprobamos conexión
+                  comprobarConexion();
 
-    //             case 3:
-                
-    //                 break;
+                  // Llamamos al metodo run en el que mostramos los 
+                  // componentes que tenemos de la interfaz grafica
+                  inicializarInterfaz(); 
+ 
+                    break;
 
-    //             case 4:
-                    
-    //                 break;
-    //             case 0:
-    //                 return;
+                case 2: 
+                  // Comprobamos la contraseña del Administrador                  
+                  comprobarContraseñaAdministrador(sc);
+                  
+                break;
 
-    //             default:
-    //                 System.out.println("Numero del 1 al 4");
+                case 0:
+                    return;
 
-    //         }
-    //     }catch(InputMismatchException ex){
+                default:
+                    System.out.println("Numero del 1 al 2");
+
+            }
+        }catch(InputMismatchException ex){
             
-    //         System.out.println("Debes insertar un número");
-    //         System.out.println("Pulsa intro...");
-    //         // Metodo para pausar el menu
-    //         saltoLinea();
-    //         sc.next();
+            System.out.println("Debes insertar un número");
+            System.out.println("Pulsa intro...");
+            // Metodo para pausar el menu
+          
+            sc.next();
             
-    //     }
-    // }
+        }
     }
+    
       
+  }
+
+
+  private static void inicializarInterfaz() {
+
+    java.awt.EventQueue.invokeLater(new Runnable() {
+
+      public void run() {
+        try {
+          new App().setVisible(true);
+
+        } catch (SQLException e) {
+          System.out.println("Error en el metodo Runnable");
+        }
+      }
+    });
+  }
+
+
+  private static void comprobarContraseñaAdministrador(Scanner sc) {
+    String contraseña;
+    System.out.println("Introduce contraseña de Administrador");
+    sc.nextLine();
+    while (true) {
+      
+      contraseña = sc.nextLine();
+      if (contraseña.equals(passwd)) {
+        break;    
+
+      }else{
+        System.out.println("Contraseña incorrecta, vuelve a introducirla");
+      }
+
+    }
   }
    
       
 
-  { //   private static void mostrarVacas() {
+  
+ 
+  
+
+  
+
+
+
+
+  
+
+  // EVENTOS  de los menu item para mostrar las tablas
+ 
+  private void mostrarVacas(ActionEvent evt) throws SQLException { 
     
-  //   try {
-  //     // Genero la conexión
-  //     con = dbconnection.dataSource.getConnection();
-      
-  //     // Creo la consulta
-  //     String sql = "select * from proyecto_vacas.madre;";
-
-
-
-  //     if (con != null) {
-  //       PreparedStatement ps = null;
-  //       ps = con.prepareStatement(sql);
-  //       ResultSet rs = ps.executeQuery();
-
-  //       while (rs.next()) {
-
-  //         Vacas v = new Vacas(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6) );
-
-  //         arrayVacas.add(v);
-
-  //       }
-
-  //       for (Vacas vacas : arrayVacas) {
-  //         System.out.println(vacas.getIdCrotal() + "  -  " + vacas.getEstado());
-  //       }
-
-  //     } else {
-  //      System.out.println("ERROR: no se han mostrado las vacas");
-
-  //     }
-      
-      
-  //   }catch(SQLException e){
-
-  //   }
-
-  // }
-} 
-  
-
-  
-
-
-
-
-  private static void saltoLinea() throws IOException {
-    // Pedir pulsar intro
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    br.readLine();
+    // Llamamos al metodo actualizarMadres, para mostrar las madres en la tabla de datos
+    actualizarMadres(); 
   }
 
-  private static void comprobarConexion() {
-      
-      
-        try {
-          con = dbconnection.dataSource.getConnection();
-          System.out.println("conectado");
-      
-        } catch (SQLException e) {
-          System.out.println("No se puede conectar");
-        } finally {
-          try {
-            con.close();
-          } catch (SQLException e) {
-            System.out.println("No se puede conectar");
-          }
-        }
-      
-      }
+  private void mostrarToros(ActionEvent evt) throws SQLException { 
+    
+    // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
+    actualizarPadres(); 
+  }
+  
+  private void mostrarTerneros(ActionEvent evt) throws SQLException { 
+    
+    // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
+    actualizarTerneros(); 
+  }
 
- 
-  private void jMenuItem2Accion(ActionEvent evt) throws SQLException {    
+  private void mostrarRaza(ActionEvent evt) throws SQLException { 
+    
+    // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
+    actualizarRazas(); 
+  }
 
+
+  // Metodos de actualizar tablas y objetos
+
+  private void actualizarMadres() throws SQLException{
       DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Estado Parto","Nº Partos","Entrada Explotacion","Fecha Nacimiento"});
+      dtm.setColumnIdentifiers(new String[]{"Crotal","Raza","Estado Parto","Nº Partos","Entrada Explotacion","Fecha Nacimiento"});
         
        // Genero la conexión
        con = dbconnection.dataSource.getConnection();
       
        // Creo la consulta
-       String sql = "select * from proyecto_vacas.madre;";
+       String sql = "SELECT m.id_Crotal, r.tipoRaza, m.estadoParto, m.nPartos, m.entradaExplotacion, m.fecha_Nacimiento " + 
+                    "from proyecto_vacas.madre m " + 
+                    "inner join proyecto_vacas.raza r on r.id_Raza = m.id_Raza;";
  
  
  
@@ -223,31 +233,184 @@ public class App extends JFrame implements ActionListener {
       }else{
         JOptionPane.showMessageDialog(this, "conexion fallida");
       }
+  }
 
+  private void actualizarPadres() throws SQLException{
+
+
+    // Marcamos el modelo de la tabla que necesitamos
+      DefaultTableModel dtm = new DefaultTableModel();
+      dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Estado Reproductor","Entrada Explotacion","Fecha Nacimiento"});
+        
+       // Genero la conexión
+       con = dbconnection.dataSource.getConnection();
       
+       // Creo la consulta
+       String sql = "select * from proyecto_vacas.padre;";
+ 
+ 
+ 
+       if (con != null) {
+         PreparedStatement ps = null;
+         ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery();
       
+     
+
+        while (rs.next()) {        
+
+          
+          String toros[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)};
+          Toros t = new Toros(toros[0], toros[1], toros[2], toros[3], toros[4]);
+          
+          dtm.addRow(toros);
+
+          arrayToros.add(t);
+
+        
+          
+        
+        }
+
+        tablaDatos.setModel(dtm);
+        
+      }else{
+        JOptionPane.showMessageDialog(this, "conexion fallida");
+      }
+  }
+
+  private void actualizarTerneros() throws SQLException{
+
+
+    // Marcamos el modelo de la tabla que necesitamos
+      DefaultTableModel dtm = new DefaultTableModel();
+      dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Sexo","Peso","Fecha Nacimiento","Crotal Padre", "Crotal Madre"});
+        
+       // Genero la conexión
+       con = dbconnection.dataSource.getConnection();
       
+       // Creo la consulta
+       String sql = "select * from proyecto_vacas.terneros;";
+ 
+ 
+ 
+       if (con != null) {
+         PreparedStatement ps = null;
+         ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery();
+      
+     
+
+        while (rs.next()) {        
+
+          
+          String terneros[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)};
+          Terneros tern = new Terneros(terneros[0], terneros[1], terneros[2], terneros[3], terneros[4],terneros[5],terneros[6],terneros[7]);
+          
+          dtm.addRow(terneros);
+
+          arrayTerneros.add(tern);
+
+        
+          
+        
+        }
+
+        tablaDatos.setModel(dtm);
+        
+      }else{
+        JOptionPane.showMessageDialog(this, "conexion fallida");
+      }
+  }
+    
+  private void actualizarRazas() throws SQLException{
+
+
+
+    // Marcamos el modelo de la tabla que necesitamos
+      DefaultTableModel dtm = new DefaultTableModel();
+      dtm.setColumnIdentifiers(new String[]{"Id Raza","Tipo","Color De Piel"});
+        
+       // Genero la conexión
+       con = dbconnection.dataSource.getConnection();
+      
+       // Creo la consulta
+       String sql = "select * from proyecto_vacas.raza;";
+ 
+ 
+ 
+       if (con != null) {
+         PreparedStatement ps = null;
+         ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery();
+      
+     
+
+        while (rs.next()) {        
+
+          
+          String razas[] = {rs.getString(1),rs.getString(2),rs.getString(3)};
+          Razas r = new Razas(razas[0], razas[1], razas[2]);
+          
+          dtm.addRow(razas);
+
+          arrayRazas.add(r);
+
+        
+          
+        
+        }
+
+        tablaDatos.setModel(dtm);
+        
+      }else{
+        JOptionPane.showMessageDialog(this, "conexion fallida");
+      }
+  }
+
+
+// Añadir vaca
+
+  private void insertarVacaActionListener(ActionEvent evt) {
+
+    AddVaca newvaca = null;
+    try {
+      newvaca = new AddVaca(null,true);
+    } catch (SQLException e) {
+      Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
+    }
+    newvaca.setVisible(true);
+    
+
+
   }
 
 
 
-  public App() {         
-        intiComponents();
 
-      }
-           
   private void intiComponents() {
 
         
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaDatos = new javax.swing.JTable();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        vacasMostrar = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
+        jScrollPane1 = new JScrollPane();
+        tablaDatos = new JTable();
+        menuPrincipal = new JMenuBar();
+
+        vacas = new JMenu();
+        toros = new JMenu();
+        terneros = new JMenu();
+        razas = new JMenu();
+
+        mostrarVacasMenu = new JMenuItem();
+        mostrarTorosMenu = new JMenuItem();
+        mostrarTernerosMenu = new JMenuItem();
+        mostrarRazasMenu = new JMenuItem();
+
+        modificarVacasMenu = new JMenuItem();
+
+        insertarVacasMenu = new JMenuItem();
+
+        borrarVacasMenu = new JMenuItem();
+        razas = new JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -264,38 +427,108 @@ public class App extends JFrame implements ActionListener {
         ));
         jScrollPane1.setViewportView(tablaDatos);
 
-        vacasMostrar.setText("Vacas");
 
-        jMenuItem2.setText("Mostrar Vacas");
-        
-        
-        jMenuItem2.addActionListener(new ActionListener() {
+        // Genero el menu item VACAS
+        vacas.setText("Vacas");
+
+        mostrarVacasMenu.setText("Mostrar Vacas");
+            
+        mostrarVacasMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 try {
-                  jMenuItem2Accion(evt);
+                  mostrarVacas(evt);
                 } catch (SQLException e) {
-                  System.out.println("error");
+                  System.out.println("ERROR: en mostrar vacas");
                 }
             }
         });
 
-        vacasMostrar.add(jMenuItem2);
+        vacas.add(mostrarVacasMenu);
 
-        jMenuItem1.setText("Modificar Una vaca");
-        vacasMostrar.add(jMenuItem1);
+        insertarVacasMenu.setText("Insertar Vaca");
+        insertarVacasMenu.addActionListener(new java.awt.event.ActionListener() {
+          public void actionPerformed(java.awt.event.ActionEvent evt) {
+              insertarVacaActionListener(evt);
+          }
+      });
+      
+        vacas.add(insertarVacasMenu);
 
-        jMenuBar1.add(vacasMostrar);
+        modificarVacasMenu.setText("Modificar Vaca");
+        vacas.add(modificarVacasMenu);
 
-        jMenu2.setText("Toros");
-        jMenuBar1.add(jMenu2);
+        borrarVacasMenu.setText("Borrar Vaca");
+        vacas.add(borrarVacasMenu);
 
-        jMenu3.setText("Terneros");
-        jMenuBar1.add(jMenu3);
+        menuPrincipal.add(vacas);
 
-        jMenu4.setText("Razas");
-        jMenuBar1.add(jMenu4);
 
-        setJMenuBar(jMenuBar1);
+
+        // Genero el menu item TOROS
+
+        toros.setText("Toros");
+
+        mostrarTorosMenu.setText("Mostrar Toros");
+
+        mostrarTorosMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                  mostrarToros(evt);
+                } catch (SQLException e) {
+                  System.out.println("ERROR: en mostrar toros");
+
+                }
+            }
+        });
+
+        toros.add(mostrarTorosMenu);
+
+        menuPrincipal.add(toros);
+
+
+
+
+        // Genero el menu item TERNEROS
+
+        terneros.setText("Terneros");
+        mostrarTernerosMenu.setText("Mostrar Terneros");
+        mostrarTernerosMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+              try {
+                mostrarTerneros(evt);
+              } catch (SQLException e) {
+                System.out.println("ERROR: en mostrar terneros");
+
+              }
+          }
+        });
+        
+        terneros.add(mostrarTernerosMenu);
+
+        menuPrincipal.add(terneros);
+        
+
+        // Genero el menu item RAZAS
+
+        razas.setText("Razas");
+        mostrarRazasMenu.setText("Mostrar Razas");
+        mostrarRazasMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+              try {
+                mostrarRaza(evt);
+              } catch (SQLException e) {
+                System.out.println("ERROR: en mostrar terneros");
+
+              }
+          }
+        });
+        
+        razas.add(mostrarRazasMenu);
+
+        menuPrincipal.add(razas);
+
+
+        setJMenuBar(menuPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -314,24 +547,48 @@ public class App extends JFrame implements ActionListener {
       }
   
       
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaDatos;
-    private javax.swing.JMenu vacasMostrar;
+    private JMenu vacas;
+    private JMenu toros;
+    private JMenu terneros;
+    private JMenu razas;
+    private JMenuBar menuPrincipal;
+    private JMenuItem mostrarVacasMenu;
+    private JMenuItem mostrarTorosMenu;
+    private JMenuItem mostrarTernerosMenu;
+    private JMenuItem mostrarRazasMenu;
+    private JMenuItem insertarVacasMenu;
+    private JMenuItem modificarVacasMenu;
+    private JMenuItem borrarVacasMenu;
+    private JScrollPane jScrollPane1;
+    private JTable tablaDatos;
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      // TODO Auto-generated method stub
+     
       
     }
 
-
+   
+  
+    private static void comprobarConexion() {
+        
+        
+          try {
+            con = dbconnection.dataSource.getConnection();
+            System.out.println("Conexion Realizada con EXITO");
+        
+          } catch (SQLException e) {
+            System.out.println("No se puede conectar a la BD");
+          } finally {
+            try {
+              con.close();
+            } catch (SQLException e) {
+              System.out.println("No se puede conectar a la BD");
+            }
+          }
+        
+        }
 
 
     
