@@ -12,7 +12,7 @@ public class DbConnection{
 
     public DataSource dataSource;
 
-    private String database;
+    //private String database;
     private String urlConnection;
     private String user;
     private String pwd;
@@ -33,9 +33,9 @@ public class DbConnection{
             properties.loadFromXML(fileInputS);
             fileInputS.close();
             
-            database = properties.getProperty("basedatos");
-            urlConnection=properties.getProperty("urlConnectionCasa");
-            //urlConnection=properties.getProperty("urlConnectionClase");
+           //database = properties.getProperty("basedatos");
+            //urlConnection=properties.getProperty("urlConnectionCasa");
+            urlConnection=properties.getProperty("urlConnectionClase");
             user = properties.getProperty("user");
             pwd = properties.getProperty("pwd"); 
 

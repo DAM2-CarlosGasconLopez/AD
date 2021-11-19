@@ -33,6 +33,7 @@ public class ModifyVaca extends javax.swing.JFrame {
         actualizarCrotalesYtipoEstado();
 
     }
+    
     private void actualizarCrotalesYtipoEstado() throws SQLException {
 
         // Genero la conexión
@@ -117,13 +118,15 @@ public class ModifyVaca extends javax.swing.JFrame {
 
             dispose();
 
+            
+
     }
 
     public ModifyVaca(Object object, boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
     
-    @SuppressWarnings("unchecked")
+ 
                         
     private void initComponents() {
 

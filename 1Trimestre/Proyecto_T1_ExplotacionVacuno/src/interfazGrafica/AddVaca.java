@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -114,7 +113,6 @@ public class AddVaca extends javax.swing.JFrame{
         con = dbconnection.dataSource.getConnection();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String aliment = "";
 
         int crotal = (int) spinnerCrotal.getValue();
         String raza = cbRaza.getSelectedItem().toString();

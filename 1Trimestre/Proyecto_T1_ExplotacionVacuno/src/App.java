@@ -1,8 +1,6 @@
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -25,6 +23,7 @@ import Objetos.Razas;
 import Objetos.Terneros;
 import Objetos.Toros;
 import Objetos.Vacas;
+import actualizarObjetosEnTabla.tabla;
 import administrador.dentroAdmin;
 import interfazGrafica.AddVaca;
 import interfazGrafica.DeleteVaca;
@@ -36,7 +35,7 @@ public class App extends JFrame implements ActionListener {
   // CONEXION
   public static DbConnection dbconnection = new DbConnection();
   public static Connection con = null;
-  //******************************************************************* 
+  //************************************************************************************************
 
   // Declaracion Variables del MENU INTERFAZ
   private JMenu vacas;
@@ -53,7 +52,7 @@ public class App extends JFrame implements ActionListener {
   private JMenuItem borrarVacasMenu;
   private JScrollPane jScrollPane1;
   private JTable tablaDatos;
-  //****************************************************************** 
+  //************************************************************************************************
 
   // LISTAS ANIMNALES
   static List<Vacas> arrayVacas = new ArrayList<Vacas>();
@@ -63,16 +62,28 @@ public class App extends JFrame implements ActionListener {
 
   // CONTRASEÑA admin usada en el metodo 'comprobarContraseñaAdministrador()'
   static final String passwd = "Admin1234";
-  //************************************************************************ 
+  //************************************************************************************************
 
+
+
+  
   // Inicializamos los componentes de la interfaz
   public App()  throws SQLException{    
 
     intiComponents();
-    actualizarMadres();
+
+    try {
+     
+      actualizarMadres();
+     
+    } catch (SQLException e) {
+
+      System.out.println("Inserta una tabla mediante el usuario administrador");
+      //new App().setVisible(false);
+    }
 
   }
-  //************************************************************************ 
+  //************************************************************************************************
   
 
   // INICIACION DE LA APP EN EL MAIN
@@ -105,7 +116,6 @@ public class App extends JFrame implements ActionListener {
 
                   //Comprobamos conexión
                   comprobarConexion();
-
                   // Llamamos al metodo run en el que mostramos los 
                   // componentes que tenemos de la interfaz grafica
                   inicializarInterfaz(); 
@@ -138,7 +148,7 @@ public class App extends JFrame implements ActionListener {
     
       
   }
-  //************************************************************************ 
+  //***********************************************************************************************
 
 
   // Metodos llamados en el switch MENU
@@ -157,7 +167,6 @@ public class App extends JFrame implements ActionListener {
       }
     });
   }
-
 
   private static void comprobarContraseñaAdministrador(Scanner sc) throws SQLException {
     String contraseña;
@@ -224,7 +233,7 @@ public class App extends JFrame implements ActionListener {
 
   }
   
-  //*********************************************** */
+  //***********************************************************************************************
 
       
 
@@ -235,9 +244,12 @@ public class App extends JFrame implements ActionListener {
   private void mostrarVacas(ActionEvent evt) throws SQLException { 
     
     // Llamamos al metodo actualizarMadres, para mostrar las madres en la tabla de datos
-    actualizarMadres(); 
-  }
+    actualizarMadres();
+    
 
+  }
+  
+  
   private void mostrarToros(ActionEvent evt) throws SQLException { 
     
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
@@ -249,190 +261,80 @@ public class App extends JFrame implements ActionListener {
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
     actualizarTerneros(); 
   }
-
+  
   private void mostrarRaza(ActionEvent evt) throws SQLException { 
     
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
     actualizarRazas(); 
   }
-
-  // ****************************************************************
-
-
-
+  
+  // *********************************************************************************************
+  
+  
+  
   // Metodos de actualizar tablas y objetos
+  
+  public void actualizarMadres() throws SQLException{
+    DefaultTableModel dtm = new DefaultTableModel();
+    var tableFormat = tabla.actualizarMadres(dtm);
 
-  private void actualizarMadres() throws SQLException{
-      DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Crotal","Raza","Estado Parto","Nº Partos","Entrada Explotacion","Fecha Nacimiento","Alimento"});
-        
-       // Genero la conexión
-       con = dbconnection.dataSource.getConnection();
+    if (tableFormat!= null) {
       
-       // Creo la consulta
-       String sql = "SELECT m.id_Crotal, r.tipoRaza, m.estadoParto, m.nPartos, m.entradaExplotacion, m.fecha_Nacimiento, m.cod_TipoComida " + 
-                    "from proyecto_vacas.madre m " + 
-                    "inner join proyecto_vacas.raza r on r.id_Raza = m.id_Raza;";
- 
- 
- 
-       if (con != null) {
-         PreparedStatement ps = null;
-         ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery();
-      
-     
-
-        while (rs.next()) {        
-         
-          String vacas[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)};
-          Vacas v = new Vacas(vacas[0], vacas[1], vacas[2], vacas[3], vacas[4], vacas[5],vacas[6]);
-          
-          dtm.addRow(vacas);
-          arrayVacas.add(v);
-                 
-        }
-        tablaDatos.setModel(dtm);
+    tablaDatos.setModel(dtm);
         
-      }else{
-        JOptionPane.showMessageDialog(this, "conexion fallida");
-      }
+    }else{
+      JOptionPane.showMessageDialog(this, "No se han actualizado las");
+    }
   }
-
+  
   private void actualizarPadres() throws SQLException{
-
-
-    // Marcamos el modelo de la tabla que necesitamos
-      DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Estado Reproductor","Entrada Explotacion","Fecha Nacimiento"});
-        
-       // Genero la conexión
-       con = dbconnection.dataSource.getConnection();
+    
+    
+    DefaultTableModel dtm = new DefaultTableModel();
+    var tableFormat = tabla.actualizarPadres(dtm);
+    
+    if (tableFormat!= null) {
       
-       // Creo la consulta
-       String sql = "select * from proyecto_vacas.padre;";
- 
- 
- 
-       if (con != null) {
-         PreparedStatement ps = null;
-         ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery();
-      
-     
-
-        while (rs.next()) {        
-
-          
-          String toros[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)};
-          Toros t = new Toros(toros[0], toros[1], toros[2], toros[3], toros[4]);
-          
-          dtm.addRow(toros);
-
-          arrayToros.add(t);
-
+    tablaDatos.setModel(dtm);
         
-          
-        
-        }
+    }else{
 
-        tablaDatos.setModel(dtm);
-        
-      }else{
-        JOptionPane.showMessageDialog(this, "conexion fallida");
-      }
+      JOptionPane.showMessageDialog(this, "No se han actualizado los toros");
+    }
   }
 
   private void actualizarTerneros() throws SQLException{
 
-
-    // Marcamos el modelo de la tabla que necesitamos
-      DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Sexo","Peso","Fecha Nacimiento","Crotal Padre", "Crotal Madre"});
-        
-       // Genero la conexión
-       con = dbconnection.dataSource.getConnection();
-      
-       // Creo la consulta
-       String sql = "select * from proyecto_vacas.terneros;";
- 
- 
- 
-       if (con != null) {
-         PreparedStatement ps = null;
-         ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery();
-      
-     
-
-        while (rs.next()) {        
-
-          
-          String terneros[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)};
-          Terneros tern = new Terneros(terneros[0], terneros[1], terneros[2], terneros[3], terneros[4],terneros[5],terneros[6],terneros[7]);
-          
-          dtm.addRow(terneros);
-
-          arrayTerneros.add(tern);
-
-        
-          
-        
-        }
-
-        tablaDatos.setModel(dtm);
-        
-      }else{
-        JOptionPane.showMessageDialog(this, "conexion fallida");
-      }
-  }
+    DefaultTableModel dtm = new DefaultTableModel();
+    var tableFormat = tabla.actualizarTerneros(dtm);
     
+    if (tableFormat!= null) {
+      
+    tablaDatos.setModel(dtm);
+        
+    }else{
+
+      JOptionPane.showMessageDialog(this, "No se han actualizado los terneros");
+    }
+  }
+
   private void actualizarRazas() throws SQLException{
 
-
-
-    // Marcamos el modelo de la tabla que necesitamos
-      DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Id Raza","Tipo","Color De Piel"});
-        
-       // Genero la conexión
-       con = dbconnection.dataSource.getConnection();
+    DefaultTableModel dtm = new DefaultTableModel();
+    var tableFormat = tabla.actualizarRazas(dtm);
+    
+    if (tableFormat!= null) {
       
-       // Creo la consulta
-       String sql = "select * from proyecto_vacas.raza;";
- 
- 
- 
-       if (con != null) {
-         PreparedStatement ps = null;
-         ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery();
-      
-     
-
-        while (rs.next()) {        
-
-          
-          String razas[] = {rs.getString(1),rs.getString(2),rs.getString(3)};
-          Razas r = new Razas(razas[0], razas[1], razas[2]);
-          
-          dtm.addRow(razas);
-
-          arrayRazas.add(r);
-
+    tablaDatos.setModel(dtm);
         
-          
-        
-        }
+    }else{
 
-        tablaDatos.setModel(dtm);
-        
-      }else{
-        JOptionPane.showMessageDialog(this, "conexion fallida");
-      }
+      JOptionPane.showMessageDialog(this, "No se han actualizado las razas");
+    }
   }
 
- //***************************************************** */
+ //***********************************************************************************************
+
 
   // Añadir vaca
 
@@ -447,7 +349,7 @@ public class App extends JFrame implements ActionListener {
     newvaca.setVisible(true);
 
     try {
-      mostrarVacas(evt);
+      actualizarMadres();
     } catch (SQLException e) {
       System.out.println("ERROR: mostrar vacas despues de insertar");
     }
@@ -455,7 +357,7 @@ public class App extends JFrame implements ActionListener {
 
 
   }
-
+ //************************************************************************************************
 
   // Modificar vaca
 
@@ -470,14 +372,14 @@ public class App extends JFrame implements ActionListener {
     modificarVaca.setVisible(true);
 
     try {
-      mostrarVacas(evt);
+      actualizarMadres();
     } catch (SQLException e) {
       System.out.println("ERROR: mostrar vacas despues de modificar");
     }
     
   }
 
-  // ******************************************
+  // **********************************************************************************************
   
   
   // Delete Vaca
@@ -493,14 +395,14 @@ public class App extends JFrame implements ActionListener {
     delVaca.setVisible(true);
 
     
-    mostrarVacas(evt);
+    actualizarMadres();
     
     
   }
-  // ******************************************
+  // **********************************************************************************************
 
 
-
+  // Trabajamos con los componentes de la INTERFAZ
   private void intiComponents() {
 
         
@@ -525,7 +427,7 @@ public class App extends JFrame implements ActionListener {
         borrarVacasMenu = new JMenuItem();
         razas = new JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tablaDatos.setModel(new DefaultTableModel(
             new Object [][] {
@@ -675,19 +577,14 @@ public class App extends JFrame implements ActionListener {
 
         pack();
       }
-  
-
-      
-
-
+  //***********************************************************************************************
     @Override
     public void actionPerformed(ActionEvent e) {
-     
-      
+       
     }
 
    
-  
+  // Metodo COMPROBAR LA CONEXION CON LA BD
     private static void comprobarConexion() {
         
         
@@ -706,7 +603,7 @@ public class App extends JFrame implements ActionListener {
           }
         
         }
-
+//************************************************************* */
 
   
 }

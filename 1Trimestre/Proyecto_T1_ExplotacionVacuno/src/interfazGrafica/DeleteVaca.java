@@ -36,9 +36,6 @@ public class DeleteVaca extends javax.swing.JFrame{
         con = dbconnection.dataSource.getConnection();
 
         // Creo la consulta
-        String sqlEstado = "SELECT estadoParto " + 
-                           "from proyecto_vacas.madre  " +                    
-                           "group by estadoParto;";
 
         String sqlCrotal = "SELECT id_Crotal " + 
                            "from proyecto_vacas.madre;  ";
@@ -110,7 +107,7 @@ public class DeleteVaca extends javax.swing.JFrame{
         txtCrotal = new javax.swing.JLabel();
         btnBorrar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Borrar Vaca");
