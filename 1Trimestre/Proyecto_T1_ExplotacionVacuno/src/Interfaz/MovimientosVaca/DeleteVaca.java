@@ -1,4 +1,4 @@
-package interfazGrafica;
+package Interfaz.MovimientosVaca;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,7 +37,7 @@ public class DeleteVaca extends javax.swing.JFrame{
 
         // Creo la consulta
 
-        String sqlCrotal = "SELECT id_Crotal " + 
+        String sqlCrotal = "SELECT id_Crotal,id_Raza, fecha_Nacimiento " + 
                            "from proyecto_vacas.madre;  ";
 
         if (con != null) {
@@ -50,13 +50,15 @@ public class DeleteVaca extends javax.swing.JFrame{
 
             rs = ps.executeQuery();  
 
-            String crotal[] = new String[1];          
+            String vaca[] = new String[3];          
 
             while (rs.next()) {
 
-               crotal[0] = rs.getString(1);
+               vaca[0] = rs.getString(1);
+               vaca[1] = rs.getString(2);
+               vaca[2] = rs.getString(3);
 
-                cbCrotalesVacas.addItem(crotal[0]);
+                cbCrotalesVacas.addItem(vaca[0] + "," + vaca[1] + "," + vaca[2]);
             }
 
         } else {
@@ -74,18 +76,31 @@ public class DeleteVaca extends javax.swing.JFrame{
 
         String crotal = cbCrotalesVacas.getSelectedItem().toString();
 
-        int idCrotal;
 
         try {
-            String sql = "delete from madre "+
-                         "where id_Crotal = ?;";
+
+
+            //Llamada al procedimientoo
+
+            String sql = "call proyecto_vacas.cambiarAnimal(?, ?, ?);";
 
             PreparedStatement ps = con.prepareStatement(sql);
-            idCrotal = Integer.parseInt(crotal);
 
-            ps.setInt(1, idCrotal);
-            
+            String[] separar = crotal.split(",");
 
+            ps.setInt(1, Integer.parseInt(separar[0]));
+            ps.setInt(2, Integer.parseInt(separar[1]));
+            ps.setString(3,separar[2]);
+
+            ps.executeUpdate();
+
+
+            // Borro el animal muerto de la lista 
+            String sqlDelete = "delete from madre "+
+                               "where id_Crotal = ?;";
+
+            ps = con.prepareStatement(sqlDelete);
+            ps.setInt(1, Integer.parseInt(separar[0]));
 
             ps.executeUpdate();
             

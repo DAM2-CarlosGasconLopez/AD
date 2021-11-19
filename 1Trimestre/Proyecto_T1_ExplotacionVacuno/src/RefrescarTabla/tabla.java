@@ -1,4 +1,4 @@
-package actualizarObjetosEnTabla;
+package RefrescarTabla;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
-import Objetos.Razas;
+import Objetos.Muertes;
 import Objetos.Terneros;
 import Objetos.Toros;
 import Objetos.Vacas;
@@ -25,7 +25,7 @@ public class tabla {
   static List<Vacas> arrayVacas = new ArrayList<Vacas>();
   static List<Toros> arrayToros = new ArrayList<Toros>();
   static List<Terneros> arrayTerneros = new ArrayList<Terneros>();
-  static List<Razas> arrayRazas = new ArrayList<Razas>();
+  static List<Muertes> arrayMuerte = new ArrayList<Muertes>();
     
   public static DefaultTableModel actualizarMadres(DefaultTableModel dtm) throws SQLException{
     
@@ -45,6 +45,8 @@ public class tabla {
        PreparedStatement ps = null;
        ps = con.prepareStatement(sql);
        ResultSet rs = ps.executeQuery();
+
+
     
    
 
@@ -110,7 +112,7 @@ public static DefaultTableModel actualizarTerneros(DefaultTableModel dtm) throws
 
 
   // Marcamos el modelo de la tabla que necesitamos
-    dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Sexo","Peso","Fecha Nacimiento","Crotal Padre", "Crotal Madre"});
+    dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Sexo","Peso","Estado","Fecha Nacimiento","Crotal Padre", "Crotal Madre"});
       
      // Genero la conexión
      con = dbconnection.dataSource.getConnection();
@@ -146,19 +148,19 @@ public static DefaultTableModel actualizarTerneros(DefaultTableModel dtm) throws
     return dtm;
 }
   
-public static DefaultTableModel actualizarRazas(DefaultTableModel dtm) throws SQLException{
+public static DefaultTableModel actualizarMuertes(DefaultTableModel dtm) throws SQLException{
 
 
 
   // Marcamos el modelo de la tabla que necesitamos
    
-    dtm.setColumnIdentifiers(new String[]{"Id Raza","Tipo","Color De Piel"});
+    dtm.setColumnIdentifiers(new String[]{"Id Crotal","Id Raza","Fecha Nacimiento"});
       
      // Genero la conexión
      con = dbconnection.dataSource.getConnection();
     
      // Creo la consulta
-     String sql = "select * from proyecto_vacas.raza;";
+     String sql = "select * from proyecto_vacas.animalesmuertos;";
 
 
 
@@ -173,11 +175,11 @@ public static DefaultTableModel actualizarRazas(DefaultTableModel dtm) throws SQ
 
         
         String razas[] = {rs.getString(1),rs.getString(2),rs.getString(3)};
-        Razas r = new Razas(razas[0], razas[1], razas[2]);
+        Muertes r = new Muertes(razas[0], razas[1], razas[2]);
         
         dtm.addRow(razas);
 
-        arrayRazas.add(r);
+        arrayMuerte.add(r);
 
       
         

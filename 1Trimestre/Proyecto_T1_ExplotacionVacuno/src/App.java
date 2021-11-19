@@ -19,15 +19,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import Objetos.Razas;
+
+import Administrador.dentroAdmin;
+import Interfaz.MovimientosToro.AddToro;
+import Interfaz.MovimientosVaca.AddVaca;
+import Interfaz.MovimientosVaca.DeleteVaca;
+import Interfaz.MovimientosVaca.ModifyVaca;
+import Objetos.Muertes;
 import Objetos.Terneros;
 import Objetos.Toros;
 import Objetos.Vacas;
-import actualizarObjetosEnTabla.tabla;
-import administrador.dentroAdmin;
-import interfazGrafica.AddVaca;
-import interfazGrafica.DeleteVaca;
-import interfazGrafica.ModifyVaca;
+import RefrescarTabla.tabla;
 import mySQL_XML.DbConnection;
 
 public class App extends JFrame implements ActionListener {
@@ -41,13 +43,14 @@ public class App extends JFrame implements ActionListener {
   private JMenu vacas;
   private JMenu toros;
   private JMenu terneros;
-  private JMenu razas;
+  private JMenu muertes;
   private JMenuBar menuPrincipal;
   private JMenuItem mostrarVacasMenu;
   private JMenuItem mostrarTorosMenu;
   private JMenuItem mostrarTernerosMenu;
-  private JMenuItem mostrarRazasMenu;
+  private JMenuItem mostrarMuertesMenu;
   private JMenuItem insertarVacasMenu;
+  private JMenuItem insertarToroMenu;
   private JMenuItem modificarVacasMenu;
   private JMenuItem borrarVacasMenu;
   private JScrollPane jScrollPane1;
@@ -58,7 +61,7 @@ public class App extends JFrame implements ActionListener {
   static List<Vacas> arrayVacas = new ArrayList<Vacas>();
   static List<Toros> arrayToros = new ArrayList<Toros>();
   static List<Terneros> arrayTerneros = new ArrayList<Terneros>();
-  static List<Razas> arrayRazas = new ArrayList<Razas>();
+  static List<Muertes> arrayRazas = new ArrayList<Muertes>();
 
   // CONTRASEÑA admin usada en el metodo 'comprobarContraseñaAdministrador()'
   static final String passwd = "Admin1234";
@@ -245,13 +248,11 @@ public class App extends JFrame implements ActionListener {
     
     // Llamamos al metodo actualizarMadres, para mostrar las madres en la tabla de datos
     actualizarMadres();
-    
 
   }
   
-  
   private void mostrarToros(ActionEvent evt) throws SQLException { 
-    
+
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
     actualizarPadres(); 
   }
@@ -262,10 +263,10 @@ public class App extends JFrame implements ActionListener {
     actualizarTerneros(); 
   }
   
-  private void mostrarRaza(ActionEvent evt) throws SQLException { 
+  private void mostrarMuertes(ActionEvent evt) throws SQLException { 
     
     // Llamamos al metodo actualizarPadres, para mostrar los padres en la tabla de datos
-    actualizarRazas(); 
+    actualizarMuertes(); 
   }
   
   // *********************************************************************************************
@@ -318,10 +319,10 @@ public class App extends JFrame implements ActionListener {
     }
   }
 
-  private void actualizarRazas() throws SQLException{
+  private void actualizarMuertes() throws SQLException{
 
     DefaultTableModel dtm = new DefaultTableModel();
-    var tableFormat = tabla.actualizarRazas(dtm);
+    var tableFormat = tabla.actualizarMuertes(dtm);
     
     if (tableFormat!= null) {
       
@@ -329,29 +330,43 @@ public class App extends JFrame implements ActionListener {
         
     }else{
 
-      JOptionPane.showMessageDialog(this, "No se han actualizado las razas");
+      JOptionPane.showMessageDialog(this, "No se han actualizado las muertes");
     }
   }
 
  //***********************************************************************************************
 
 
-  // Añadir vaca
+  // Insertar Vaca
 
-  private void insertarVacaActionListener(ActionEvent evt) {
+
+  private void insertarVacaActionListener(ActionEvent evt) throws SQLException {
 
     AddVaca newvaca = null;
-    try {
-      newvaca = new AddVaca(null,true);
-    } catch (SQLException e) {
-      Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
-    }
+    newvaca = new AddVaca(null,true);
     newvaca.setVisible(true);
 
     try {
       actualizarMadres();
     } catch (SQLException e) {
-      System.out.println("ERROR: mostrar vacas despues de insertar");
+      System.out.println("ERROR: mostrar vacas despues de insertar vaca");
+    }
+    
+
+
+  }
+  // Insertar Toro
+  private void insertarToroActionListener(ActionEvent evt) throws SQLException {
+
+    AddToro newToro = null;
+    newToro = new AddToro(null,true);
+
+    newToro.setVisible(true);
+
+    try {
+      actualizarPadres();
+    } catch (SQLException e) {
+      System.out.println("ERROR: mostrar vacas despues de insertar toro");
     }
     
 
@@ -359,7 +374,7 @@ public class App extends JFrame implements ActionListener {
   }
  //************************************************************************************************
 
-  // Modificar vaca
+  // Modificar Vaca
 
   private void modificarVacaActionListener(ActionEvent evt) {
 
@@ -413,19 +428,20 @@ public class App extends JFrame implements ActionListener {
         vacas = new JMenu();
         toros = new JMenu();
         terneros = new JMenu();
-        razas = new JMenu();
+        muertes = new JMenu();
 
         mostrarVacasMenu = new JMenuItem();
         mostrarTorosMenu = new JMenuItem();
         mostrarTernerosMenu = new JMenuItem();
-        mostrarRazasMenu = new JMenuItem();
+        mostrarMuertesMenu = new JMenuItem();
 
         modificarVacasMenu = new JMenuItem();
 
         insertarVacasMenu = new JMenuItem();
+        insertarToroMenu = new JMenuItem();
 
         borrarVacasMenu = new JMenuItem();
-        razas = new JMenu();
+        muertes = new JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -463,7 +479,12 @@ public class App extends JFrame implements ActionListener {
         insertarVacasMenu.setText("Insertar Vaca");
         insertarVacasMenu.addActionListener(new java.awt.event.ActionListener() {
           public void actionPerformed(java.awt.event.ActionEvent evt) {
-              insertarVacaActionListener(evt);
+              try {
+                insertarVacaActionListener(evt);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
           }
         });
       
@@ -515,6 +536,21 @@ public class App extends JFrame implements ActionListener {
 
         toros.add(mostrarTorosMenu);
 
+        insertarToroMenu.setText("Insertar Toro");
+        insertarToroMenu.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+              try {
+                insertarToroActionListener(evt);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+          }
+        });
+      
+        toros.add(insertarToroMenu);
+
+
         menuPrincipal.add(toros);
 
 
@@ -542,22 +578,22 @@ public class App extends JFrame implements ActionListener {
 
         // Genero el menu item RAZAS
 
-        razas.setText("Razas");
-        mostrarRazasMenu.setText("Mostrar Razas");
-        mostrarRazasMenu.addActionListener(new ActionListener() {
+        muertes.setText("Muertes");
+        mostrarMuertesMenu.setText("Mostrar Muertes");
+        mostrarMuertesMenu.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
               try {
-                mostrarRaza(evt);
+                mostrarMuertes(evt);
               } catch (SQLException e) {
-                System.out.println("ERROR: en mostrar terneros");
+                System.out.println("ERROR: en mostrar muertes");
 
               }
           }
         });
         
-        razas.add(mostrarRazasMenu);
+        muertes.add(mostrarMuertesMenu);
 
-        menuPrincipal.add(razas);
+        menuPrincipal.add(muertes);
 
 
         setJMenuBar(menuPrincipal);

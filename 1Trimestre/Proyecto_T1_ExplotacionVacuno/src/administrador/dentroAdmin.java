@@ -1,4 +1,4 @@
-package administrador;
+package Administrador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +16,7 @@ public class dentroAdmin {
 
         con = dbconnection.dataSource.getConnection();
         
-        String sql1 ="create table pienso(id_Pienso int auto_increment not null, tipoPienso varchar(20), constraint primary key (id_Pienso)); \n";
+        String sql1 = "create table pienso(id_Pienso int auto_increment not null, tipoPienso varchar(20), constraint primary key (id_Pienso)); \n";
 
         String sql2 = "alter table madre add cod_TipoComida int; ";
         String sql3 = "alter table madre add constraint foreign key (cod_TipoComida) references pienso (id_Pienso); " ;
@@ -28,6 +28,8 @@ public class dentroAdmin {
         String sql6 = "update madre set cod_TipoComida = 4 where estadoParto = 'Cubierta'; " ;
 
         String sql7 = "update madre set cod_TipoComida = 2 where estadoParto = 'En celo';";
+
+        String sql8 = "create table animalesMuertos(id_Crotal int not null, id_Raza int not null, fechaNacimiento date not null, constraint primary key (id_Crotal));";
 
         
             if (con != null) {
@@ -52,6 +54,9 @@ public class dentroAdmin {
                 ps.executeUpdate();
 
                 ps = con.prepareStatement(sql7);               
+                ps.executeUpdate();
+
+                ps = con.prepareStatement(sql8);               
                 ps.executeUpdate();
 
 
