@@ -9,14 +9,16 @@ public class Vacas {
     private String partos;
     private String entradaExplotacion;
     private String fechaNacimiento;
-    
-    public Vacas(String idCrotal, String raza, String estado, String partos, String entradaExplotacion,String fechaNacimiento) {
+    private String alimento;
+
+    public Vacas(String idCrotal, String raza, String estado, String partos, String entradaExplotacion, String fechaNacimiento, String alimento) {
         this.idCrotal = idCrotal;
         this.raza = raza;
         this.estado = estado;
         this.partos = partos;
         this.entradaExplotacion = entradaExplotacion;
         this.fechaNacimiento = fechaNacimiento;
+        this.alimento = alimento;
     }
     public String getIdCrotal() {
         return idCrotal;
@@ -24,10 +26,10 @@ public class Vacas {
     public void setIdCrotal(String idCrotal) {
         this.idCrotal = idCrotal;
     }
-    public String getIdRaza() {
+    public String getRaza() {
         return raza;
     }
-    public void setIdRaza(String raza) {
+    public void setRaza(String raza) {
         this.raza = raza;
     }
     public String getEstado() {
@@ -54,9 +56,13 @@ public class Vacas {
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+    public String getAlimento() {
+        return alimento;
+    }
+    public void setAlimento(String alimento) {
+        this.alimento = alimento;
+    }
     
     
-    
-      
     
 }

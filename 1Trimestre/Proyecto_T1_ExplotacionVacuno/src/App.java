@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.sound.sampled.Line;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -26,7 +25,9 @@ import Objetos.Razas;
 import Objetos.Terneros;
 import Objetos.Toros;
 import Objetos.Vacas;
+import administrador.dentroAdmin;
 import interfazGrafica.AddVaca;
+import interfazGrafica.DeleteVaca;
 import interfazGrafica.ModifyVaca;
 import mySQL_XML.DbConnection;
 
@@ -75,7 +76,7 @@ public class App extends JFrame implements ActionListener {
   
 
   // INICIACION DE LA APP EN EL MAIN
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, SQLException {
     
     // Aqui comprobamos la conexíon 
 
@@ -158,7 +159,7 @@ public class App extends JFrame implements ActionListener {
   }
 
 
-  private static void comprobarContraseñaAdministrador(Scanner sc) {
+  private static void comprobarContraseñaAdministrador(Scanner sc) throws SQLException {
     String contraseña;
     System.out.println("Introduce contraseña de Administrador");
     sc.nextLine();
@@ -166,6 +167,7 @@ public class App extends JFrame implements ActionListener {
       
       contraseña = sc.nextLine();
       if (contraseña.equals(passwd)) {
+        gestionAdministrador(sc);
         break;    
 
       }else{
@@ -173,6 +175,53 @@ public class App extends JFrame implements ActionListener {
       }
 
     }
+  }
+
+  private static void gestionAdministrador(Scanner sc) throws SQLException{
+    int menu = 10;
+
+    while (menu != 0) {
+        System.out.println();
+        System.out.println("===============================================================");
+        System.out.println("=========== GESTION GANADERA por Carlos Gascón López ==========");
+        System.out.println("===================== GESTION AMINISTRADOR ====================");
+        System.out.println("===============================================================");
+        System.out.println("=== 1 - Crear una tabla                                     ===");
+        System.out.println("=== 2 - Modificar una tabla                                 ===");
+        System.out.println("===============================================================");
+        System.out.println("===             0 - Para cerrar el programa                 ===");
+        System.out.println("===============================================================");
+
+        try{
+            menu = sc.nextInt();
+
+            switch (menu) {
+                case 1:
+                    dentroAdmin.crearTabla();
+                    break;
+
+                case 2: 
+                  
+                break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Numero del 1 al 2");
+
+            }
+        }catch(InputMismatchException ex){
+            
+            System.out.println("Debes insertar un número");
+            System.out.println("Pulsa intro...");
+            // Metodo para pausar el menu
+          
+            sc.next();
+            
+        }
+    }
+
   }
   
   //*********************************************** */
@@ -215,13 +264,13 @@ public class App extends JFrame implements ActionListener {
 
   private void actualizarMadres() throws SQLException{
       DefaultTableModel dtm = new DefaultTableModel();
-      dtm.setColumnIdentifiers(new String[]{"Crotal","Raza","Estado Parto","Nº Partos","Entrada Explotacion","Fecha Nacimiento"});
+      dtm.setColumnIdentifiers(new String[]{"Crotal","Raza","Estado Parto","Nº Partos","Entrada Explotacion","Fecha Nacimiento","Alimento"});
         
        // Genero la conexión
        con = dbconnection.dataSource.getConnection();
       
        // Creo la consulta
-       String sql = "SELECT m.id_Crotal, r.tipoRaza, m.estadoParto, m.nPartos, m.entradaExplotacion, m.fecha_Nacimiento " + 
+       String sql = "SELECT m.id_Crotal, r.tipoRaza, m.estadoParto, m.nPartos, m.entradaExplotacion, m.fecha_Nacimiento, m.cod_TipoComida " + 
                     "from proyecto_vacas.madre m " + 
                     "inner join proyecto_vacas.raza r on r.id_Raza = m.id_Raza;";
  
@@ -235,18 +284,13 @@ public class App extends JFrame implements ActionListener {
      
 
         while (rs.next()) {        
-
-          
-          String vacas[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6)};
-          Vacas v = new Vacas(vacas[0], vacas[1], vacas[2], vacas[3], vacas[4], vacas[5]);
+         
+          String vacas[] = {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)};
+          Vacas v = new Vacas(vacas[0], vacas[1], vacas[2], vacas[3], vacas[4], vacas[5],vacas[6]);
           
           dtm.addRow(vacas);
-
           arrayVacas.add(v);
-
-        
-          
-        
+                 
         }
         tablaDatos.setModel(dtm);
         
@@ -434,6 +478,27 @@ public class App extends JFrame implements ActionListener {
   }
 
   // ******************************************
+  
+  
+  // Delete Vaca
+  private void borrarVacaActionListener(ActionEvent evt) throws SQLException{
+
+    DeleteVaca delVaca = null;
+
+    try {
+      delVaca = new DeleteVaca(null,true);
+    } catch (SQLException e) {
+      Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
+    }
+    delVaca.setVisible(true);
+
+    
+    mostrarVacas(evt);
+    
+    
+  }
+  // ******************************************
+
 
 
   private void intiComponents() {
@@ -508,9 +573,21 @@ public class App extends JFrame implements ActionListener {
               modificarVacaActionListener(evt);
           }
         });
+
         vacas.add(modificarVacasMenu);
 
         borrarVacasMenu.setText("Borrar Vaca");
+        borrarVacasMenu.addActionListener(new java.awt.event.ActionListener() {
+          public void actionPerformed(java.awt.event.ActionEvent evt){
+              try {
+                borrarVacaActionListener(evt);
+              } catch (SQLException e) {
+           
+                e.printStackTrace();
+              }
+          }
+        });
+
         vacas.add(borrarVacasMenu);
 
         menuPrincipal.add(vacas);

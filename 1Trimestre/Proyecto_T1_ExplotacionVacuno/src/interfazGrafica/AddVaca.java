@@ -70,11 +70,20 @@ public class AddVaca extends javax.swing.JFrame{
 
             String te[] = new String[1];
 
+            String comida = "";
             while (rs.next()) {
+               
+                if(rs.getString(1).equals("Inactiva")){
+                    comida = "1";
+                }else if (rs.getString(1).equals("Cubierta")) {
+                    comida = "4";
+                }else if(rs.getString(1).equals("En celo")){
+                    comida = "2";
+                }
 
                te[0] = rs.getString(1);
 
-                cbEstado.addItem(te[0]);
+                cbEstado.addItem(te[0] + "    ," + comida);
 
             }
         
@@ -105,6 +114,7 @@ public class AddVaca extends javax.swing.JFrame{
         con = dbconnection.dataSource.getConnection();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String aliment = "";
 
         int crotal = (int) spinnerCrotal.getValue();
         String raza = cbRaza.getSelectedItem().toString();
@@ -117,19 +127,29 @@ public class AddVaca extends javax.swing.JFrame{
         String[] arraySeparar = raza.split(",");
         newRaza = Integer.parseInt(arraySeparar[0]);
 
+        int comida = 0;
+        String[] arraySepararEstado = estado.split(",");
+        estado = arraySepararEstado[0];
+        comida = Integer.parseInt(arraySepararEstado[1]);
+
+        
+
         try {
-            String sql = "insert into madre values(?,?,?,?,?,?);";
+            String sql = "insert into madre values(?,?,?,?,?,?,?);";
 
             PreparedStatement ps = con.prepareStatement(sql);
+            
             ps.setInt(1, crotal);
             ps.setInt(2, newRaza);
             ps.setString(3, estado);
             ps.setInt(4, partos);
             ps.setString(5, entrada);
             ps.setString(6, nacimiento);
+            ps.setInt(7,comida);
 
 
             ps.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println("ERROR: crotal de vaca existente");
             Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
