@@ -37,7 +37,8 @@ public class tabla {
      // Creo la consulta
      String sql = "SELECT m.id_Crotal, r.tipoRaza, m.estadoParto, m.nPartos, m.entradaExplotacion, m.fecha_Nacimiento, m.cod_TipoComida " + 
                   "from proyecto_vacas.madre m " + 
-                  "inner join proyecto_vacas.raza r on r.id_Raza = m.id_Raza;";
+                  "inner join proyecto_vacas.raza r on r.id_Raza = m.id_Raza "+
+                  "where m.id_Crotal !=0;";
 
 
 

@@ -38,7 +38,8 @@ public class DeleteVaca extends javax.swing.JFrame{
         // Creo la consulta
 
         String sqlCrotal = "SELECT id_Crotal,id_Raza, fecha_Nacimiento " + 
-                           "from proyecto_vacas.madre;  ";
+                           "from proyecto_vacas.madre " +
+                            "where id_Crotal != 0;";
 
         if (con != null) {
             
@@ -79,7 +80,6 @@ public class DeleteVaca extends javax.swing.JFrame{
 
         try {
 
-
             //Llamada al procedimientoo
 
             String sql = "call proyecto_vacas.cambiarAnimal(?, ?, ?);";
@@ -91,21 +91,11 @@ public class DeleteVaca extends javax.swing.JFrame{
             ps.setInt(1, Integer.parseInt(separar[0]));
             ps.setInt(2, Integer.parseInt(separar[1]));
             ps.setString(3,separar[2]);
-
             ps.executeUpdate();
 
-
-            // Borro el animal muerto de la lista 
-            String sqlDelete = "delete from madre "+
-                               "where id_Crotal = ?;";
-
-            ps = con.prepareStatement(sqlDelete);
-            ps.setInt(1, Integer.parseInt(separar[0]));
-
-            ps.executeUpdate();
             
         } catch (SQLException e) {
-
+            System.out.println(e);
             //System.out.println("ERROR: crotal de vaca existente");
             Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
 

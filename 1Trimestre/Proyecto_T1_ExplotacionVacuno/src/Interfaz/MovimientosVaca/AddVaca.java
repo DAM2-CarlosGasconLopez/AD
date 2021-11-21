@@ -139,8 +139,9 @@ public class AddVaca extends javax.swing.JFrame{
         try {
             String sql = "insert into madre values(?,?,?,?,?,?,?);";
 
+
             PreparedStatement ps = con.prepareStatement(sql);
-            
+            con.setAutoCommit(false);
             ps.setInt(1, crotal);
             ps.setInt(2, newRaza);
             ps.setString(3, estado);
@@ -151,6 +152,7 @@ public class AddVaca extends javax.swing.JFrame{
 
 
             ps.executeUpdate();
+            con.commit();
 
         } catch (SQLException e) {
             System.out.println("ERROR: crotal de vaca existente");
@@ -161,9 +163,6 @@ public class AddVaca extends javax.swing.JFrame{
             dispose();
 
     }
-
-    
-  
     
     private void initComponents() {
 

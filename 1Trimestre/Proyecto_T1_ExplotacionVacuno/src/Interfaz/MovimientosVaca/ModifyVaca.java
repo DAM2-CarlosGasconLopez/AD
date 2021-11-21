@@ -45,7 +45,8 @@ public class ModifyVaca extends javax.swing.JFrame {
                            "group by estadoParto;";
 
         String sqlCrotal = "SELECT id_Crotal " + 
-                           "from proyecto_vacas.madre;  ";
+                           "from proyecto_vacas.madre "+
+                           "where id_Crotal !=0;  ";
 
         if (con != null) {
             // Estado

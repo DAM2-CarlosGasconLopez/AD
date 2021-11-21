@@ -21,7 +21,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Administrador.dentroAdmin;
-import Interfaz.MovimientosToro.AddToro;
 import Interfaz.MovimientosVaca.AddVaca;
 import Interfaz.MovimientosVaca.DeleteVaca;
 import Interfaz.MovimientosVaca.ModifyVaca;
@@ -51,8 +50,13 @@ public class App extends JFrame implements ActionListener {
   private JMenuItem mostrarMuertesMenu;
   private JMenuItem insertarVacasMenu;
   private JMenuItem insertarToroMenu;
+  private JMenuItem insertarTernero;
   private JMenuItem modificarVacasMenu;
+  private JMenuItem modificarToro;
+  private JMenuItem modificarTernero;
   private JMenuItem borrarVacasMenu;
+  private JMenuItem borrarToroMenu;
+  private JMenuItem borrarTerneroMenu;
   private JScrollPane jScrollPane1;
   private JTable tablaDatos;
   //************************************************************************************************
@@ -65,6 +69,7 @@ public class App extends JFrame implements ActionListener {
 
   // CONTRASEÑA admin usada en el metodo 'comprobarContraseñaAdministrador()'
   static final String passwd = "Admin1234";
+  static boolean pulsadoUsuario2 = false;
   //************************************************************************************************
 
 
@@ -81,7 +86,7 @@ public class App extends JFrame implements ActionListener {
      
     } catch (SQLException e) {
 
-      System.out.println("Inserta una tabla mediante el usuario administrador");
+      
       //new App().setVisible(false);
     }
 
@@ -120,9 +125,14 @@ public class App extends JFrame implements ActionListener {
                   //Comprobamos conexión
                   comprobarConexion();
                   // Llamamos al metodo run en el que mostramos los 
-                  // componentes que tenemos de la interfaz grafica
-                  inicializarInterfaz(); 
- 
+                  // componentes que tenemos de la interfaz grafica                  
+
+                  if (pulsadoUsuario2) {
+                    inicializarInterfaz(); 
+                    
+                  }else{
+                    System.out.println("Inserta una tabla mediante el usuario administrador");
+                  }
                     break;
 
                 case 2: 
@@ -180,6 +190,7 @@ public class App extends JFrame implements ActionListener {
       contraseña = sc.nextLine();
       if (contraseña.equals(passwd)) {
         gestionAdministrador(sc);
+        pulsadoUsuario2 = true;
         break;    
 
       }else{
@@ -198,10 +209,14 @@ public class App extends JFrame implements ActionListener {
         System.out.println("=========== GESTION GANADERA por Carlos Gascón López ==========");
         System.out.println("===================== GESTION AMINISTRADOR ====================");
         System.out.println("===============================================================");
-        System.out.println("=== 1 - Crear una tabla                                     ===");
-        System.out.println("=== 2 - Modificar una tabla                                 ===");
+        System.out.println("===                                                         ===");
+        System.out.println("===    1 - Crear una tabla  y  Modificar una tabla          ===");
+        System.out.println("===                                                         ===");
+        System.out.println("===    Si ya has utilizado la App y la has ejecutado        ===");
+        System.out.println("===        clica en cero, y entra en user Ganadero          ===");
+        System.out.println("===                                                         ===");
         System.out.println("===============================================================");
-        System.out.println("===             0 - Para cerrar el programa                 ===");
+        System.out.println("===             0 - Para volver al menu princiapal          ===");
         System.out.println("===============================================================");
 
         try{
@@ -355,23 +370,7 @@ public class App extends JFrame implements ActionListener {
 
 
   }
-  // Insertar Toro
-  private void insertarToroActionListener(ActionEvent evt) throws SQLException {
-
-    AddToro newToro = null;
-    newToro = new AddToro(null,true);
-
-    newToro.setVisible(true);
-
-    try {
-      actualizarPadres();
-    } catch (SQLException e) {
-      System.out.println("ERROR: mostrar vacas despues de insertar toro");
-    }
-    
-
-
-  }
+  
  //************************************************************************************************
 
   // Modificar Vaca
@@ -436,11 +435,17 @@ public class App extends JFrame implements ActionListener {
         mostrarMuertesMenu = new JMenuItem();
 
         modificarVacasMenu = new JMenuItem();
+        modificarToro = new JMenuItem();
+        modificarTernero = new JMenuItem();
 
         insertarVacasMenu = new JMenuItem();
         insertarToroMenu = new JMenuItem();
+        insertarTernero = new JMenuItem();
 
         borrarVacasMenu = new JMenuItem();
+        borrarToroMenu = new JMenuItem();
+        borrarTerneroMenu = new JMenuItem();
+
         muertes = new JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -536,19 +541,14 @@ public class App extends JFrame implements ActionListener {
 
         toros.add(mostrarTorosMenu);
 
-        insertarToroMenu.setText("Insertar Toro");
-        insertarToroMenu.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent evt) {
-              try {
-                insertarToroActionListener(evt);
-              } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-              }
-          }
-        });
-      
+        insertarToroMenu.setText("Insertar Toro");  
         toros.add(insertarToroMenu);
+
+        modificarToro.setText("Modificar Toro");  
+        toros.add(modificarToro);
+        
+        borrarToroMenu.setText("Borrar Toro");  
+        toros.add(borrarToroMenu);
 
 
         menuPrincipal.add(toros);
@@ -572,6 +572,15 @@ public class App extends JFrame implements ActionListener {
         });
         
         terneros.add(mostrarTernerosMenu);
+
+        insertarTernero.setText("Insertar Ternero");  
+        terneros.add(insertarTernero);
+
+        modificarTernero.setText("Modificar Ternero");  
+        terneros.add(modificarTernero);
+
+        borrarTerneroMenu.setText("Borrar Ternero");  
+        terneros.add(borrarTerneroMenu);
 
         menuPrincipal.add(terneros);
         

@@ -15,6 +15,11 @@ public class dentroAdmin {
     public static void crearTabla() throws SQLException{
 
         con = dbconnection.dataSource.getConnection();
+
+        String sqldropPienso = "drop table if exists pienso;";
+        String sqldropAnimales = "drop table if exists animalesMuertos;";
+        String sqlAlter1 = "alter table madre DROP foreign key madre_ibfk_2;";
+        String sqlAlter2 = "alter table madre DROP column cod_TipoComida;";
         
         String sql1 = "create table pienso(id_Pienso int auto_increment not null, tipoPienso varchar(20), constraint primary key (id_Pienso)); \n";
 
@@ -35,6 +40,18 @@ public class dentroAdmin {
             if (con != null) {
                 // Estado
                 PreparedStatement ps = null;
+
+                System.out.println("Espere un momento, Gracias !!!");
+
+                ps = con.prepareStatement(sqlAlter1);
+                ps.executeUpdate();
+                ps = con.prepareStatement(sqlAlter2);
+                ps.executeUpdate();
+                ps = con.prepareStatement(sqldropPienso);
+                ps.executeUpdate();
+                ps = con.prepareStatement(sqldropAnimales);
+                ps.executeUpdate();
+
                 ps = con.prepareStatement(sql1);
                 ps.executeUpdate();
 
