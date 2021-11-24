@@ -85,8 +85,13 @@ public class AddVaca extends javax.swing.JFrame{
                 }
 
                te[0] = rs.getString(1);
+               if (te[0].equals("Sustituta")) {
+                   
+               }else{
+                   cbEstado.addItem(te[0] + "  ," + comida);
 
-                cbEstado.addItem(te[0] + "    ," + comida);
+               }
+
 
             }
         
@@ -159,7 +164,7 @@ public class AddVaca extends javax.swing.JFrame{
             Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
 
         }
-
+           
             dispose();
 
     }

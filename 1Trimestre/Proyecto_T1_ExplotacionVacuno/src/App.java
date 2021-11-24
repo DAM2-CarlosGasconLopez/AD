@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import Administrador.dentroAdmin;
+import administrador.dentroAdmin;
 import Interfaz.MovimientosVaca.AddVaca;
 import Interfaz.MovimientosVaca.DeleteVaca;
 import Interfaz.MovimientosVaca.ModifyVaca;

@@ -60,9 +60,12 @@ public class ModifyVaca extends javax.swing.JFrame {
             while (rs.next()) {
 
                te[0] = rs.getString(1);
-
+               if (te[0].equals("Sustituta")) {
+                   
+            }else{
                 cbEstadoVaca.addItem(te[0]);
 
+            }
             }
         
             // Raza
