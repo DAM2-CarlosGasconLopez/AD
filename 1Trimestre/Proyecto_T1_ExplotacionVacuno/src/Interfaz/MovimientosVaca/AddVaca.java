@@ -161,6 +161,7 @@ public class AddVaca extends javax.swing.JFrame{
 
         } catch (SQLException e) {
             System.out.println("ERROR: crotal de vaca existente");
+            JOptionPane.showMessageDialog(this, "ERROR: crotal de vaca existente");
             Logger.getLogger(AddVaca.class.getName()).log(Level.SEVERE, null, e);
 
         }
@@ -185,6 +186,15 @@ public class AddVaca extends javax.swing.JFrame{
         spinnerNacimiento = new JSpinner();
         jLabel1 = new JLabel();
         btnAñadir = new JButton();
+
+        txtCrotal.setEditable(false);
+        txtRaza.setEditable(false);
+        txtEstado.setEditable(false);
+        txtPartos.setEditable(false);
+        txtNacimiento.setEditable(false);
+        txtEntrada.setEditable(false);
+
+        
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 

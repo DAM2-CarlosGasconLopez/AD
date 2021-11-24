@@ -74,10 +74,12 @@ public class ModifyVaca extends javax.swing.JFrame {
 
             rs = ps.executeQuery();  
             String crotal[] = new String[1];          
-
+            
             while (rs.next()) {
 
                crotal[0] = rs.getString(1);
+
+                
 
                 cbCrotalesVacas.addItem(crotal[0]);
             }
@@ -97,6 +99,7 @@ public class ModifyVaca extends javax.swing.JFrame {
 
         String crotal = cbCrotalesVacas.getSelectedItem().toString();
         String estado = cbEstadoVaca.getSelectedItem().toString();
+        String comida = "";
 
         int idCrotal;
         try {
@@ -104,14 +107,34 @@ public class ModifyVaca extends javax.swing.JFrame {
                          "set estadoParto = ? "+
                          "where id_Crotal = ?;";
 
+            String sql1 = "update madre "+
+                         "set cod_TipoComida = ? "+
+                         "where id_Crotal = ?;";
+
             PreparedStatement ps = con.prepareStatement(sql);
             idCrotal = Integer.parseInt(crotal);
             ps.setString(1, estado);
             ps.setInt(2, idCrotal);
+            ps.executeUpdate();
+
+            if(estado.equals("Inactiva")){
+                comida = "1";
+            }else if (estado.equals("Cubierta")) {
+                comida = "4";
+            }else if(estado.equals("En celo")){
+                comida = "2";
+            }
+            
+            ps = con.prepareStatement(sql1);
+            ps.setString(1, comida);
+            ps.setInt(2, idCrotal);
+            ps.executeUpdate();
+
+
+
             
 
 
-            ps.executeUpdate();
             
         } catch (SQLException e) {
 

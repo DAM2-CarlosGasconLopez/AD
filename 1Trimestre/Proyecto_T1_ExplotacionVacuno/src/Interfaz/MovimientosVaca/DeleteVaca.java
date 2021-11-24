@@ -112,6 +112,8 @@ public class DeleteVaca extends javax.swing.JFrame{
         txtCrotal = new javax.swing.JLabel();
         btnBorrar = new javax.swing.JButton();
 
+       
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
